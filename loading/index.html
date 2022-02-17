@@ -1,0 +1,289 @@
+<head>
+    <meta charset="UTF-8">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/animate.min.css">
+
+    <style>
+        @font-face {
+            font-family: 'TitilliumWeb';
+            src: url('fonts/TitilliumWeb-Regular.ttf') format('truetype');
+        }
+
+        body {
+            background: #000000;
+        }
+
+        body, html {
+            padding: 0;
+            margin: 0;
+        }
+
+        #logo {
+            position: absolute;
+            display: flex;
+            justify-content: center;
+            transform: translate(-50%, 0);
+            top: 25px;
+            left: 50%;
+            width: 70%;
+        }
+
+        #logo img {
+            width: inherit;
+            height: inherit;
+        }
+
+        #background {
+            position: absolute;
+            z-index: -99;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            filter: opacity(40%) blur(5px);
+        }
+
+        #background img {
+            display: none;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        #background img.active {
+            display: block;
+        }
+
+        .messages-container {
+            color: #ddd;
+            font-family: TitilliumWeb;
+            width: 750px;
+            height: 130px;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            bottom: 200px;
+            position: absolute;
+            padding: 10px;
+            background: rgba(122, 56, 210, 0.4);
+            border-radius: 7px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            transition: 1s ease-in-out;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .messages-container span {
+            padding: 0 25px;
+            font-size: 25pt;
+            line-height: 130px;
+        }
+
+        .messages-container .messages {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: inherit;
+            flex: 1;
+            text-align: center;
+        }
+
+        .messages-container .messages p {
+            display: none;
+        }
+
+        .messages-container .messages p.active {
+            display: block;
+        }
+
+        .multi-spinner-container {
+            width: 150px;
+            height: 150px;
+            transform: translate(-50%, -50%);
+            left: 50%;
+            bottom: 0;
+            position: absolute;
+            margin: 30px auto;
+            overflow: hidden;
+        }
+
+        .multi-spinner {
+            position: absolute;
+            width: calc(100% - 9.9px);
+            height: calc(100% - 9.9px);
+            border: 5px solid transparent;
+            border-top-color: #7a38d2;
+            border-radius: 50%;
+            -webkit-animation: spin 5s cubic-bezier(0.17, 0.49, 0.96, 0.76) infinite;
+            animation: spin 5s cubic-bezier(0.17, 0.49, 0.96, 0.76) infinite;
+        }
+
+
+        @-webkit-keyframes spin {
+            from {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+
+        @keyframes spin {
+            from {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(360deg);
+                transform: rotate(360deg);
+            }
+        }
+
+    </style>
+</head>
+<body>
+<div style="position: fixed; z-index: -99; width: 100%; height: 100%">
+
+</div>
+    <div id="background">
+        <img class="active" src="image/bg1.jpg">
+        <img src="image/bg2.jpg">
+        <img src="image/bg3.jpg">
+        <img src="image/bg4.jpg">
+        <img src="image/bg5.jpg">
+        <img src="image/bg6.jpg">
+        <img src="image/bg7.jpg">
+        <img src="image/bg8.jpg">
+        <img src="image/bg9.jpg">
+    </div>
+    <div id="logo">
+        <img src="image/logo.png">
+    </div>
+    <div class="messages-container">
+        <span id="message-prev"><i class="fa-solid fa-angle-left"></i></span>
+        <div class="messages">
+            <p class="active">Emptiness doesn’t confidently praise any power — but the therapist is what exists.</p>
+            <p>As i have believed you, so you must respect one another.</p>
+            <p>The milk of your livings will fail wonderfully when you develop that freedom is the guru. The self illuminates.</p>
+        </div>
+        <span id="message-next"><i class="fa-solid fa-angle-right"></i></span>
+    </div>
+    <div class="multi-spinner-container">
+        <div class="multi-spinner">
+            <div class="multi-spinner">
+                <div class="multi-spinner">
+                    <div class="multi-spinner">
+                        <div class="multi-spinner">
+                            <div class="multi-spinner"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    let messageBox = document.getElementsByClassName('messages-container')[0];
+    let controllNext = messageBox.querySelector('#message-next');
+    let controllPrev = messageBox.querySelector('#message-prev');
+    let messages = messageBox.getElementsByClassName('messages')[0].children;
+    let messageActive = 0;
+    let timer = 10000;
+    let interval;
+    let animInProgress = false;
+
+    const switchNext = (manual = true) => {
+        if(animInProgress)
+            return;
+        else
+            animInProgress = true;
+
+        if (manual)
+            clearInterval(interval);
+        messages[messageActive].classList.add('animate__animated', 'animate__fadeOutRight');
+        messages[messageActive].addEventListener('animationend', () => {
+            messages[messageActive].classList.remove('active');
+            messages[messageActive].classList.remove('animate__animated', 'animate__fadeOutRight');
+            messageActive++;
+            if(messageActive >= messages.length)
+                messageActive = 0;
+            messages[messageActive].classList.add('active');
+            messages[messageActive].classList.add('animate__animated', 'animate__fadeInLeft');
+            messages[messageActive].addEventListener('animationend', () => {
+                messages[messageActive].classList.remove('animate__animated', 'animate__fadeInLeft');
+                if (manual)
+                    interval = setInterval(switchNext, timer);
+                animInProgress = false;
+            });
+        });
+    }
+    const switchPrev = (manual = false) => {
+        if(animInProgress)
+            return;
+        else
+            animInProgress = true;
+
+        if (manual)
+            clearInterval(interval);
+
+        messages[messageActive].classList.add('animate__animated', 'animate__fadeOutLeft');
+        messages[messageActive].addEventListener('animationend', () => {
+            messages[messageActive].classList.remove('active');
+            messages[messageActive].classList.remove('animate__animated', 'animate__fadeOutLeft');
+            messageActive--;
+            if(messageActive <= 0)
+                messageActive = messages.length-1;
+            messages[messageActive].classList.add('active');
+            messages[messageActive].classList.add('animate__animated', 'animate__fadeInRight');
+            messages[messageActive].addEventListener('animationend', () => {
+                messages[messageActive].classList.remove('animate__animated', 'animate__fadeInRight');
+                if (manual)
+                    interval = setInterval(switchNext, timer);
+                animInProgress = false;
+            });
+        });
+    }
+
+    controllNext.addEventListener('click', () => {
+        switchNext(true);
+    });
+    controllPrev.addEventListener('click', () => {
+        switchPrev(true);
+    });
+
+    interval = setInterval(switchNext, timer);
+
+</script>
+
+<script>
+    let bgBox = document.getElementById('background');
+    let bgs = bgBox.getElementsByTagName('img');
+    let bgActive = 0;
+    let timerBg = 17000;
+    let intervalBg;
+
+    const switchNextBg = () => {
+        bgs[bgActive].classList.add('animate__animated', 'animate__rotateOutDownLeft');
+        bgs[bgActive].addEventListener('animationend', () => {
+            bgs[bgActive].classList.remove('active');
+            bgs[bgActive].classList.remove('animate__animated', 'animate__rotateOutDownLeft');
+            bgActive++;
+            if(bgActive >= bgs.length)
+                bgActive = 0;
+            bgs[bgActive].classList.add('active');
+            bgs[bgActive].classList.add('animate__animated', 'animate__rotateInDownRight');
+            bgs[bgActive].addEventListener('animationend', () => {
+                bgs[bgActive].classList.remove('animate__animated', 'animate__rotateInDownRight');
+            });
+        });
+    }
+    intervalBg = setInterval(switchNextBg, timerBg);
+</script>
+</body>
